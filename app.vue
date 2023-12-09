@@ -115,14 +115,20 @@ const table = useVueTable({
   debugTable: true,
 });
 
+const updateStats = async () => {
+  console.log('update');
+  await useFetch('/api/okx/tradingBots/grid/stats');
+};
+
 useIntervalFn(() => {
   console.log(`refreshing the data again ${new Date().toISOString()}`);
-  refresh(); // will call the 'todos' endpoint, just above
+  // refresh(); // will call the 'todos' endpoint, just above
 }, 3000); // call it back every 3s
 </script>
 
 <template>
   <div>
+    <button type="button" @click="updateStats">Update stats</button>
     <table class="table-auto">
       <thead>
         <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id" class="py-8">

@@ -1,5 +1,6 @@
 export type Bot = {
   algoId: string;
+  algoClOrdId: string;
   algoOrdType: string;
   state: string;
   maxPx: string;
