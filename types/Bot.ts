@@ -1,8 +1,15 @@
-export type Bot = {
+export type OkxResponse<DataType> = {
+  code: string;
+  data: DataType;
+  msg: string;
+};
+
+export type OkxBotData = {
   algoId: string;
   algoClOrdId: string;
   algoOrdType: string;
-  state: string;
+  actualLever: string;
+  state: 'starting' | 'running' | 'stopped' | 'no_close_position';
   maxPx: string;
   minPx: string;
   gridNum: string;
@@ -17,4 +24,7 @@ export type Bot = {
   limitPrice: string;
   instId: string;
   liqPx: string;
+  direction: string;
+  lever: string;
+  basePos: boolean;
 };

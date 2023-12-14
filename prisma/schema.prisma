@@ -25,11 +25,13 @@ model UserProvider {
 
 model BotHistory {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  arbitrageNum String
-  totalPnl     String
-  pnlRatio     String
-  gridProfit   String
-  floatProfit  String
+  actualLever  Float    @default(0)
+  arbitrageNum Int      @default(0)
+  totalPnl     Float    @default(0)
+  pnlRatio     Float    @default(0)
+  gridProfit   Float    @default(0)
+  floatProfit  Float    @default(0)
+  liqPx        Float    @default(0)
   createdAt    DateTime @default(now())
   Bot          Bot?     @relation(fields: [botId], references: [id])
   botId        String?  @db.Uuid
@@ -37,16 +39,19 @@ model BotHistory {
 
 model Bot {
   id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  algoId      String
-  algoClOrdId String
+  algoId      BigInt       @default(0)
+  algoClOrdId Int          @default(0)
   instId      String
   state       BotState
-  maxPx       String
-  minPx       String
-  gridNum     String
+  direction   String?
+  maxPx       Float        @default(0)
+  minPx       Float        @default(0)
+  gridNum     Int          @default(0)
   runType     String
-  investment  String
+  investment  Float        @default(0)
   instFamily  String
+  lever       Float        @default(0)
+  basePos     Boolean      @default(false)
   history     BotHistory[]
   User        User?        @relation(fields: [userId], references: [id])
   userId      String?      @db.Uuid

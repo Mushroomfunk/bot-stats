@@ -9,11 +9,15 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/tailwindcss": "^6.10.1",
     "@prisma/client": "^5.7.0",
+    "@types/node": "^20.10.4",
     "@typescript-eslint/parser": "^6.13.2",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
@@ -21,6 +25,7 @@
     "nuxt": "^3.8.2",
     "prettier": "^3.1.0",
     "prisma": "^5.7.0",
+    "tsx": "^4.6.2",
     "typescript": "^5.3.3",
     "vue": "^3.3.10",
     "vue-router": "^4.2.5"

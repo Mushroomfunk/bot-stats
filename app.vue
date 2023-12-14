@@ -8,7 +8,7 @@ import {
   createColumnHelper,
   getSortedRowModel,
 } from '@tanstack/vue-table';
-import { type Bot } from '~/types/Bot';
+import { type OkxBotData } from '~/types/Bot';
 
 const { data: botsList, refresh } = await useFetch('/api/okx/tradingBots/grid/active', {
   body: {
@@ -49,7 +49,7 @@ const botsInstIds = computed(() => botsList.value.data.map((item: Bot) => item.i
   };
 });
 
-const columnHelper = createColumnHelper<Bot>();
+const columnHelper = createColumnHelper<OkxBotData>();
 
 const columns = [
   columnHelper.group({
@@ -89,10 +89,15 @@ const columns = [
         cell: (info) => Number(info.getValue()).toFixed(4),
         header: () => h('span', 'Liq. price'),
       }),
+      columnHelper.accessor((row) => row.arbitrageNum, {
+        id: 'arbitrageNum',
+        cell: (info) => Number(info.getValue()),
+        header: () => h('span', 'Arb. num'),
+      }),
     ],
   }),
 ];
-console.log(botsList.value.data);
+
 const data = computed(() => botsList.value.data ?? []);
 
 const sorting = ref<SortingState>([]);
@@ -112,7 +117,7 @@ const table = useVueTable({
   },
   getCoreRowModel: getCoreRowModel(),
   getSortedRowModel: getSortedRowModel(),
-  debugTable: true,
+  // debugTable: true,
 });
 
 const updateStats = async () => {
@@ -121,9 +126,9 @@ const updateStats = async () => {
 };
 
 useIntervalFn(() => {
-  console.log(`refreshing the data again ${new Date().toISOString()}`);
-  // refresh(); // will call the 'todos' endpoint, just above
-}, 3000); // call it back every 3s
+  // console.log(`refreshing the data again ${new Date().toISOString()}`);
+  refresh(); // will call the 'todos' endpoint, just above
+}, 10000); // call it back every 3s
 </script>
 
 <template>

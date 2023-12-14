@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { type Bot } from '~/types/Bot';
+import { type OkxBotData, type OkxResponse } from '~/types/Bot';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
@@ -14,31 +14,39 @@ export default defineEventHandler(async (event) => {
 
   //   const body: Record<string, string> = await readBody(event);
   //   const params = new URLSearchParams(body);
-  const { $api } = useApi();
+  const { $api } = await useApi();
   //   console.log(params);
-
-  const response = await $api.get(`/tradingBot/grid/orders-algo-pending?algoOrdType=contract_grid`);
-  response.data.forEach(async (element: Bot) => {
-    const user = await prisma.user.findFirst();
+  const user = await prisma.user.findFirst({
+    where: {
+      email: 'user@example.com',
+    },
+  });
+  const response: OkxResponse<OkxBotData[]> = await $api.get(
+    `/tradingBot/grid/orders-algo-pending?algoOrdType=contract_grid`
+  );
+  response.data.forEach(async (element) => {
     const existingBot = await prisma.bot.findFirst({
       where: {
-        algoId: element.algoId,
+        algoId: BigInt(element.algoId),
       },
     });
 
     if (!existingBot && user) {
       await prisma.bot.create({
         data: {
-          algoId: element.algoId,
-          algoClOrdId: element.algoClOrdId,
+          algoId: BigInt(element.algoId),
+          algoClOrdId: Number(element.algoClOrdId),
           instId: element.instId,
-          state: 'running',
-          maxPx: element.maxPx,
-          minPx: element.minPx,
-          gridNum: element.gridNum,
+          state: element.state,
+          direction: element.direction,
+          maxPx: Number(element.maxPx),
+          minPx: Number(element.minPx),
+          gridNum: Number(element.gridNum),
           runType: element.runType,
-          investment: element.investment,
+          investment: Number(element.investment),
           instFamily: element.instFamily,
+          lever: Number(element.lever),
+          basePos: Boolean(element.basePos),
           userId: user.id,
         },
       });

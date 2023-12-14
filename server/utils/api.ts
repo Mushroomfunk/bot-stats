@@ -3,12 +3,13 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function useApi() {
-  const userProvider = await prisma.userProvider.findFirst();
+  // TODO
+  const userProvider = await prisma.userProvider.findFirst({});
 
   const timestamp = new Date().toISOString();
-  const accessKey = userProvider?.apiKey;
-  const passphrase = userProvider?.passphrase;
-  const secret = userProvider?.secretKey;
+  const accessKey = userProvider!.apiKey;
+  const passphrase = userProvider!.passphrase;
+  const secret = userProvider!.secretKey;
 
   const sign = CryptoJS.enc.Base64.stringify(
     CryptoJS.HmacSHA256(

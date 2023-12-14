@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "BotHistory" ADD COLUMN     "liqPx" DOUBLE PRECISION NOT NULL DEFAULT 0;
