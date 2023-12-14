@@ -1,16 +1,17 @@
 import { PrismaClient } from '@prisma/client';
-import { type Bot } from '~/types/Bot';
+import { type OkxResponse, type OkxBotData } from '~/types/Bot';
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  const { $api } = useApi();
-  console.log(123);
+  const { $api } = await useApi();
 
-  const response = await $api.get(`/tradingBot/grid/orders-algo-pending?algoOrdType=contract_grid`);
-  response.data.forEach(async (element: Bot) => {
+  const response: OkxResponse<OkxBotData[]> = await $api.get(
+    `/tradingBot/grid/orders-algo-pending?algoOrdType=contract_grid`
+  );
+  response.data.forEach(async (element) => {
     const existingBot = await prisma.bot.findFirst({
       where: {
-        algoId: element.algoId,
+        algoId: BigInt(element.algoId),
         state: 'running',
       },
     });
@@ -20,11 +21,13 @@ export default defineEventHandler(async (event) => {
       try {
         await prisma.botHistory.create({
           data: {
-            arbitrageNum: element.arbitrageNum,
-            totalPnl: element.totalPnl,
-            pnlRatio: element.pnlRatio,
-            gridProfit: element.gridProfit,
-            floatProfit: element.floatProfit,
+            actualLever: Number(element.actualLever),
+            arbitrageNum: Number(element.arbitrageNum),
+            totalPnl: Number(element.totalPnl),
+            pnlRatio: Number(element.pnlRatio),
+            gridProfit: Number(element.gridProfit),
+            floatProfit: Number(element.floatProfit),
+            liqPx: Number(element.liqPx),
             botId: existingBot.id,
           },
         });
